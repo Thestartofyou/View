@@ -1,0 +1,31 @@
+# db_setup.py
+
+import pandas as pd
+import sqlite3
+
+# Path to your CSV file containing LLC data
+CSV_PATH = 'data/llc_data.csv'
+
+# Connect to SQLite database
+conn = sqlite3.connect('llc_data.db')
+c = conn.cursor()
+
+# Create table
+c.execute('''CREATE TABLE IF NOT EXISTS llcs (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                name TEXT NOT NULL,
+                contact TEXT,
+                address TEXT
+            )''')
+
+# Read CSV data into DataFrame
+df = pd.read_csv(CSV_PATH)
+
+# Insert data into the database
+df.to_sql('llcs', conn, if_exists='replace', index=False)
+
+# Commit and close connection
+conn.commit()
+conn.close()
+
+print("Database setup complete.")
